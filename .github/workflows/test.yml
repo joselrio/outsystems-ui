@@ -9,9 +9,21 @@ on:
                 type: string
 
 jobs:
-    print-tag:
+    check-tag:
         runs-on: ubuntu-latest
+
         if: ${{ inputs.tag_value }}
         steps:
-            - name: Print the input tag value
-              run: echo  The tag is ${{ inputs.tag_value }} at the branch ${{ github.ref_name }}
+            - name: Checkout
+              uses: actions/checkout@v3
+              with:
+                  fetch-depth: 0
+
+            - name: Check for Tag
+              run: |
+                  TAG="${{ inputs.tag_value }}"
+                  if git show-ref --tags --verify --quiet "refs/tags/${TAG}"; then
+                    echo "Tag ${TAG} exists"
+                  else
+                    echo "Tag ${TAG} does not exist"
+                  fi
