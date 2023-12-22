@@ -11,7 +11,7 @@ env:
     TAG_TO_CREATE: 0.0.0
 
 jobs:
-    check-tag:
+    set-tag:
         runs-on: ubuntu-latest
 
         if: ${{ inputs.tag_value }}
@@ -23,6 +23,17 @@ jobs:
 
             - name: Set env
               run: echo "TAG_TO_CREATE=$(echo ${{ inputs.tag_value }})" >> $GITHUB_ENV
+
+    check-tag:
+        runs-on: ubuntu-latest
+
+        if: ${{ inputs.tag_value }}
+
+        steps:
+            - name: Check if tag exist!
+              uses: actions/checkout@v3
+              with:
+                  fetch-depth: 0
 
             - name: Test
               run: echo $TAG_TO_CREATE
