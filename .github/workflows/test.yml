@@ -4,7 +4,7 @@ on:
     workflow_dispatch:
         inputs:
             tag_value:
-                description: 'Tag value'
+                description: 'Set TAG value. ex: 2.1.0 - without "v"!'
                 required: true
                 type: string
 
@@ -48,5 +48,5 @@ jobs:
 
             - name: Set tag
               run: |
-                  git tag -a ${{ inputs.tag_value }} -m "my version ${{ inputs.tag_value }}"
+                  git tag -a ${{ inputs.tag_value }}
                   git push origin --tags
