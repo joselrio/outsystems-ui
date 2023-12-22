@@ -49,5 +49,5 @@ jobs:
 
             - name: Set tag
               run: |
-                  git tag -a v${{ inputs.tag_value }} F
+                  git tag v${{ inputs.tag_value }} HEAD -m "Version ${{ inputs.tag_value }} released"
                   git push origin --tags
