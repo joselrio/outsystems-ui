@@ -49,5 +49,5 @@ jobs:
 
             - name: Set tag
               run: |
-                  git tag -a ${{ inputs.tag_value }}
+                  git tag -a ${{ inputs.tag_value }} -m "New v${{ inputs.tag_value }} tag."
                   git push origin --tags
