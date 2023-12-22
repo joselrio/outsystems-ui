@@ -4,7 +4,7 @@ on:
     workflow_dispatch:
         inputs:
             tag_value:
-                description: 'Set TAG value. ex: 2.1.0 - without "v"!'
+                description: 'Set TAG value. without "v"!'
                 required: true
                 type: string
 
@@ -28,6 +28,7 @@ jobs:
                   git push -u origin rc${{ inputs.tag_value }}
 
     set-tag:
+        needs: create-rc
         runs-on: ubuntu-latest
 
         if: ${{ inputs.tag_value }}
