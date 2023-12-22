@@ -25,6 +25,7 @@ jobs:
               run: echo "TAG_TO_CREATE=$(echo ${{ inputs.tag_value }})" >> $GITHUB_ENV
 
     check-tag:
+        needs: set-tag
         runs-on: ubuntu-latest
 
         if: ${{ inputs.tag_value }}
