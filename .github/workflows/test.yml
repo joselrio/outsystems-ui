@@ -11,12 +11,12 @@ on:
 jobs:
     create-rc:
         runs-on: ubuntu-latest
-        
+
         if: ${{ inputs.tag_value }}
         steps:
             - name: Checkout branch dev
               uses: actions/checkout@v3
-              with: 
+              with:
                   ref: dev
 
             - uses: actions/setup-node@v3
@@ -27,26 +27,26 @@ jobs:
                   git checkout -b rc${{ inputs.tag_value }}
                   git push -u origin rc${{ inputs.tag_value }}
 
-      set-tag:
-          runs-on: ubuntu-latest
+    set-tag:
+        runs-on: ubuntu-latest
 
-          if: ${{ inputs.tag_value }}
-          steps:
-              # TODO: Remove the setUp git below since it will not be needed once token will be set
-              - name: Configure Git with the GitHub Token
-                run: |
-                    git config --global user.email "sa_git_uicomponents@outsystems.com"
-                    git config --global user.name "UiComponentsBot"
-                    git config --global credential.helper store
+        if: ${{ inputs.tag_value }}
+        steps:
+            # TODO: Remove the setUp git below since it will not be needed once token will be set
+            - name: Configure Git with the GitHub Token
+              run: |
+                  git config --global user.email "sa_git_uicomponents@outsystems.com"
+                  git config --global user.name "UiComponentsBot"
+                  git config --global credential.helper store
 
-              - name: Checkout branch dev
-                uses: actions/checkout@v3
-                with:
-                    ref: rc${{ inputs.tag_value }}
-                    fetch-depth: 0
-                    # token: ${{ secrets.PAT }}
+            - name: Checkout branch dev
+              uses: actions/checkout@v3
+              with:
+                  ref: rc${{ inputs.tag_value }}
+                  fetch-depth: 0
+                  # token: ${{ secrets.PAT }}
 
-              - name: Set tag
-                run: |
-                    git tag -a ${{ inputs.tag_value }} -m "my version ${{ inputs.tag_value }}"
-                    git push origin --tags
+            - name: Set tag
+              run: |
+                  git tag -a ${{ inputs.tag_value }} -m "my version ${{ inputs.tag_value }}"
+                  git push origin --tags
