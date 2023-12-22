@@ -15,11 +15,11 @@ jobs:
         if: ${{ inputs.tag_value }}
         steps:
             # TODO: Remove the setUp git below since it will not be needed once token will be set
-            - name: Configure Git with the GitHub Token
-              run: |
-                  git config --global user.email "sa_git_uicomponents@outsystems.com"
-                  git config --global user.name "UiComponentsBot"
-                  git config --global credential.helper store
+            # - name: Configure Git with the GitHub Token
+            #   run: |
+            #       git config --global user.email "sa_git_uicomponents@outsystems.com"
+            #       git config --global user.name "UiComponentsBot"
+            #       git config --global credential.helper store
 
             - name: Checkout
               uses: actions/checkout@v3
