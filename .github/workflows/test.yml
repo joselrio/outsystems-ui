@@ -44,8 +44,7 @@ jobs:
                   git config --global user.name "UiComponentsBot"
                   git config --global credential.helper store
 
-            - name: Checkout branch dev
-              uses: actions/checkout@v3
+            - uses: actions/checkout@v3
               env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
               with:
@@ -76,8 +75,13 @@ jobs:
                   tag_name: v${{ github.event.inputs.new-version }}
                   release_name: Release of version ${{ github.event.inputs.new-version }} (${{ github.event.inputs.release-date }})
                   body: |
-                      Changes in this Release
-                      - First Change
-                      - Second Change
+                      ### What's New
+                      - First
+                      - Second
+
+                      ### Fixed Issues and Improvements
+                      - First
+                      - Second
+
                   draft: false
                   prerelease: true
