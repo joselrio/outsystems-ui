@@ -12,7 +12,7 @@ jobs:
     normalize-version-value:
         runs-on: ubuntu-latest
         outputs:
-            version: ${{ steps.extract_value_without_v.outputs.version }}
+            version: ${{ steps.extract_value_without_v.outputs.v }}
 
         if: ${{ github.event.inputs.new-version }}
         steps:
@@ -26,7 +26,7 @@ jobs:
             - name: Set output normalized version
               id: extract_value_without_v
               run: |
-                  echo "version"=${{ steps.clean-version-value.outputs._1 }} >> $GITHUB_OUTPUT
+                  echo "v"=${{ steps.clean-version-value.outputs._1 }} >> $GITHUB_OUTPUT
 
     create-rc:
         needs: normalize-version-value
@@ -44,7 +44,7 @@ jobs:
             - name: Create branch rc${{ github.event.inputs.new-version }}
               shell: bash
               run: |
-                  echo cenas_${{ needs.normalize-version-value.outputs.extract_branch }}
+                  echo cenas_${{ needs.normalize-version-value.outputs.version }}
                   git checkout -b rc${{ github.event.inputs.new-version }}
                   git push -u origin rc${{ github.event.inputs.new-version }}
 
