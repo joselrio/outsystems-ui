@@ -46,7 +46,7 @@ jobs:
               with:
                   ref: rc${{ github.event.inputs.new-tag }}
                   fetch-depth: 0
-                  token: ${{ secrets.PAT }}
+                  #   token: ${{ secrets.PAT }}
 
             - name: Set tag
               run: |
