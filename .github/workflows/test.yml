@@ -26,6 +26,9 @@ jobs:
             - name: Set output normalized version
               id: extract_value_without_v
               run: |
+                  if: ${{ steps.clean-version-value.outputs.length == 1 }}
+                  echo "v"=${{ steps.clean-version-value.outputs._0 }} >> $GITHUB_OUTPUT
+                  if: ${{ steps.clean-version-value.outputs.length == 2 }}
                   echo "v"=${{ steps.clean-version-value.outputs._1 }} >> $GITHUB_OUTPUT
 
     create-rc:
@@ -53,6 +56,7 @@ jobs:
 
         if: ${{ github.event.inputs.new-version }}
         steps:
+            # TODO: Remove the setUp git below since it will not be needed once token will be set
             - name: Configure Git with the GitHub Token
               run: |
                   git config --global user.email "sa_git_uicomponents@outsystems.com"
