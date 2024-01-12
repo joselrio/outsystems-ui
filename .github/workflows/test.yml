@@ -9,14 +9,6 @@ on:
                 required: true
 
 jobs:
-    set-new-tag:
-        runs-on: ubuntu-latest
-        steps:
-            - uses: actions/checkout@v3
-              with:
-                  fetch-depth: 0
-            - run: git tag v${{ github.event.inputs.new-tag }}
-
     create-rc:
         runs-on: ubuntu-latest
 
@@ -32,7 +24,7 @@ jobs:
             - name: Create branch rc${{ github.event.inputs.new-tag }}
               shell: bash
               run: |
-                  echo cenas_${{ github.base_ref }}
+                  echo cenas_${{ github.head_ref }}
                   git checkout -b rc${{ github.event.inputs.new-tag }}
                   git push -u origin rc${{ github.event.inputs.new-tag }}
 
