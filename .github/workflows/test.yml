@@ -3,7 +3,7 @@ name: new-pre-release
 on:
     workflow_dispatch:
         inputs:
-            version:
+            new-version:
                 description: 'The type of version to release.'
                 type: string
                 required: true
@@ -12,7 +12,7 @@ jobs:
     create-rc:
         runs-on: ubuntu-latest
 
-        if: ${{ inputs.version }}
+        if: ${{ inputs.new-version }}
         steps:
             - name: Checkout branch dev
               uses: actions/checkout@v3
@@ -21,18 +21,17 @@ jobs:
 
             - uses: actions/setup-node@v3
 
-            - name: Create branch rc${{ inputs.version }}
+            - name: Create branch rc${{ inputs.new-version }}
               shell: bash
               run: |
-                  echo cenas_$(echo $GITHUB_BASE_REF)
-                  git checkout -b rc${{ inputs.version }}
-                  git push -u origin rc${{ inputs.version }}
+                  git checkout -b rc${{ inputs.new-version }}
+                  git push -u origin rc${{ inputs.new-version }}
 
     set-tag:
         needs: create-rc
         runs-on: ubuntu-latest
 
-        if: ${{ inputs.version }}
+        if: ${{ inputs.new-version }}
         steps:
             # TODO: Remove the setUp git below since it will not be needed once token will be set
             - name: Configure Git with the GitHub Token
@@ -44,11 +43,11 @@ jobs:
             - name: Checkout branch dev
               uses: actions/checkout@v3
               with:
-                  ref: rc${{ inputs.version }}
+                  ref: rc${{ inputs.new-version }}
                   fetch-depth: 0
                   token: ${{ secrets.PAT }}
 
             - name: Set tag
               run: |
-                  git tag v${{ inputs.version }} HEAD -m "Version ${{ inputs.version }} released"
+                  git tag v${{ inputs.new-version }} HEAD -m "Version ${{ inputs.new-version }} released"
                   git push origin --tags
