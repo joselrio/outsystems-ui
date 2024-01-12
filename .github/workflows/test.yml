@@ -41,13 +41,13 @@ jobs:
             #       git config --global user.name "UiComponentsBot"
             #       git config --global credential.helper store
 
-            - uses: actions/checkout@v3
-              env:
-                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-              with:
-                  ref: rc${{ github.event.inputs.new-version }}
-                  fetch-depth: 0 # Fetch all commits and tags
-                  #   token: ${{ secrets.PAT }}
+            # - uses: actions/checkout@v3
+            #   env:
+            #       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            #   with:
+            #       ref: rc${{ github.event.inputs.new-version }}
+            #       fetch-depth: 0 # Fetch all commits and tags
+            #       #   token: ${{ secrets.PAT }}
 
             - name: Set tag
               env:
