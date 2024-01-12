@@ -21,12 +21,12 @@ jobs:
 
             - uses: actions/setup-node@v3
 
-            - name: Create branch rc${{ inputs.tag_value }}
+            - name: Create branch rc${{ inputs.version }}
               shell: bash
               run: |
-                  echo cenas_${{ inputs.tag_value }}
-                  git checkout -b rc${{ inputs.tag_value }}
-                  git push -u origin rc${{ inputs.tag_value }}
+                  echo cenas_${{ inputs.BRANCH }}
+                  git checkout -b rc${{ inputs.version }}
+                  git push -u origin rc${{ inputs.version }}
 
     set-tag:
         needs: create-rc
