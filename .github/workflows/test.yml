@@ -24,7 +24,7 @@ jobs:
             - name: Create branch rc${{ inputs.version }}
               shell: bash
               run: |
-                  echo cenas_${{ inputs.BRANCH }}
+                  echo cenas_$GITHUB_BASE_REF
                   git checkout -b rc${{ inputs.version }}
                   git push -u origin rc${{ inputs.version }}
 
