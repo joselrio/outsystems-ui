@@ -23,10 +23,10 @@ jobs:
               with:
                   ref: dev
 
-            - uses: actions/setup-node@v3
+            # - uses: actions/setup-node@v3
 
             - name: Create branch rc${{ github.event.inputs.new-version }}
-              shell: bash
+              #   shell: bash
               run: |
                   git checkout -b rc${{ github.event.inputs.new-version }}
                   git push -u origin rc${{ github.event.inputs.new-version }}
