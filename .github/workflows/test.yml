@@ -24,9 +24,12 @@ jobs:
             - name: Create branch rc${{ inputs.version }}
               shell: bash
               run: |
-                  echo cenas_$GITHUB_BASE_REF
                   git checkout -b rc${{ inputs.version }}
                   git push -u origin rc${{ inputs.version }}
+                  echo "::set-output name=branch::$(echo $GITHUB_BASE_REF)"
+                  else
+                    echo "::set-output name=branch::INVALID_EVENT_BRANCH_UNKNOWN"
+                  fi
 
     set-tag:
         needs: create-rc
