@@ -37,16 +37,12 @@ jobs:
 
         if: ${{ github.event.inputs.new-version }}
         steps:
-            - uses: actions/checkout@v3
-              with:
-                  fetch-depth: 0 # Fetch all commits and tags
-
             # TODO: Remove the setUp git below since it will not be needed once token will be set
-            # - name: Configure Git with the GitHub Token
-            #   run: |
-            #       git config --global user.email "sa_git_uicomponents@outsystems.com"
-            #       git config --global user.name "UiComponentsBot"
-            #       git config --global credential.helper store
+            - name: Configure Git with the GitHub Token
+              run: |
+                  git config --global user.email "sa_git_uicomponents@outsystems.com"
+                  git config --global user.name "UiComponentsBot"
+                  git config --global credential.helper store
 
             - name: Checkout branch dev
               uses: actions/checkout@v3
@@ -54,6 +50,7 @@ jobs:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
               with:
                   ref: rc${{ github.event.inputs.new-version }}
+                  fetch-depth: 0 # Fetch all commits and tags
                   #   token: ${{ secrets.PAT }}
 
             - name: Set tag
