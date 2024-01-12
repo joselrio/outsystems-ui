@@ -3,16 +3,24 @@ name: new-pre-release
 on:
     workflow_dispatch:
         inputs:
-            new-version:
-                description: 'The type of version to release.'
+            new-tag:
+                description: 'New tag value.'
                 type: string
                 required: true
 
 jobs:
+    set-new-tag:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v3
+              with:
+                  fetch-depth: 0
+            - run: git tag v${{ github.event.inputs.new-tag }}
+
     create-rc:
         runs-on: ubuntu-latest
 
-        if: ${{ inputs.new-version }}
+        if: ${{ github.event.inputs.new-tag }}
         steps:
             - name: Checkout branch dev
               uses: actions/checkout@v3
@@ -21,17 +29,18 @@ jobs:
 
             - uses: actions/setup-node@v3
 
-            - name: Create branch rc${{ inputs.new-version }}
+            - name: Create branch rc${{ github.event.inputs.new-tag }}
               shell: bash
               run: |
-                  git checkout -b rc${{ inputs.new-version }}
-                  git push -u origin rc${{ inputs.new-version }}
+                  echo cenas_${{ github.base_ref }}
+                  git checkout -b rc${{ github.event.inputs.new-tag }}
+                  git push -u origin rc${{ github.event.inputs.new-tag }}
 
     set-tag:
         needs: create-rc
         runs-on: ubuntu-latest
 
-        if: ${{ inputs.new-version }}
+        if: ${{ github.event.inputs.new-tag }}
         steps:
             # TODO: Remove the setUp git below since it will not be needed once token will be set
             - name: Configure Git with the GitHub Token
@@ -43,11 +52,11 @@ jobs:
             - name: Checkout branch dev
               uses: actions/checkout@v3
               with:
-                  ref: rc${{ inputs.new-version }}
+                  ref: rc${{ github.event.inputs.new-tag }}
                   fetch-depth: 0
                   token: ${{ secrets.PAT }}
 
             - name: Set tag
               run: |
-                  git tag v${{ inputs.new-version }} HEAD -m "Version ${{ inputs.new-version }} released"
+                  git tag v${{ github.event.inputs.new-tag }} HEAD -m "Version ${{ github.event.inputs.new-tag }} released"
                   git push origin --tags
