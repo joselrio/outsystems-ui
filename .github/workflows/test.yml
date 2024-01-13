@@ -64,19 +64,14 @@ jobs:
               with:
                   fetch-depth: 0 # Fetch all commits and tags
 
-            - uses: actions/setup-node@v3
-              with:
-                  node-version: 16
-                  registry-url: https://registry.npmjs.org/
-
             - name: Create Release
               id: create_release
-              uses: actions/create-release@v1.1.4
+              uses: softprops/action-gh-release@v1
               env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
               with:
                   tag_name: v${{ github.event.inputs.new-version }}
-                  release_name: Release of version ${{ github.event.inputs.new-version }} (${{ github.event.inputs.release-date }})
+                  name: Release of version ${{ github.event.inputs.new-version }} (${{ github.event.inputs.release-date }})
                   body: |
                       ### What's New
                       - First
