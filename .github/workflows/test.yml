@@ -40,7 +40,7 @@ jobs:
             - name: Install project dependencies
               run: npm install
 
-            - name: Compile Production code
+            - name: Compile into production and check for compiling issues
               run: npm run build
 
     set-tag:
