@@ -40,6 +40,7 @@ jobs:
 
             - name: Create branch rc${{ github.event.inputs.new-version }}
               run: |
+                  git pull
                   git checkout -b rc${{ github.event.inputs.new-version }}
                   git push -u origin rc${{ github.event.inputs.new-version }}
 
