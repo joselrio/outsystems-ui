@@ -71,7 +71,7 @@ jobs:
                   git tag v${{ github.event.inputs.new-version }} HEAD -m "Version ${{ github.event.inputs.new-version }} released"
                   git push origin --tags
 
-    set-prerelease:
+    set-pre-release:
         needs: set-tag
         runs-on: ubuntu-latest
 
