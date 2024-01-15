@@ -25,6 +25,7 @@ jobs:
               run: npm run build
 
     merge-rc:
+        needs: run-lint-on-rc
         runs-on: ubuntu-latest
 
         if: ${{ github.event.inputs.new-version }}
