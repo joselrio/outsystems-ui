@@ -13,7 +13,23 @@ on:
                 required: true
 
 jobs:
+    build-dev:
+        runs-on: ubuntu-latest
+
+        if: ${{ github.event.inputs.new-version }}
+        steps:
+            - uses: actions/checkout@v3
+              with:
+                  ref: dev
+
+            - name: Install project dependencies
+              run: npm install
+
+            - name: Compile into production and check for compiling issues
+              run: npm run build
+
     create-rc:
+        needs: build-dev
         runs-on: ubuntu-latest
 
         if: ${{ github.event.inputs.new-version }}
@@ -27,24 +43,8 @@ jobs:
                   git checkout -b rc${{ github.event.inputs.new-version }}
                   git push -u origin rc${{ github.event.inputs.new-version }}
 
-    build-rc:
-        needs: create-rc
-        runs-on: ubuntu-latest
-
-        if: ${{ github.event.inputs.new-version }}
-        steps:
-            - uses: actions/checkout@v3
-              with:
-                  ref: rc${{ github.event.inputs.new-version }}
-
-            - name: Install project dependencies
-              run: npm install
-
-            - name: Compile into production and check for compiling issues
-              run: npm run build
-
     set-tag:
-        needs: build-rc
+        needs: create-rc
         runs-on: ubuntu-latest
 
         if: ${{ github.event.inputs.new-version }}
