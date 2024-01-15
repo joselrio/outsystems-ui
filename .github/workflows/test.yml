@@ -8,7 +8,7 @@ on:
                 type: string
                 required: true
             release-date:
-                description: 'Set the release date.'
+                description: 'Release date.'
                 type: string
                 required: true
 
