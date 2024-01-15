@@ -13,7 +13,7 @@ on:
                 required: true
 
 jobs:
-    build-dev:
+    run-lint-on-dev:
         runs-on: ubuntu-latest
 
         if: ${{ github.event.inputs.new-version }}
@@ -25,11 +25,14 @@ jobs:
             - name: Install project dependencies
               run: npm install
 
-            - name: Compile into production and check for compiling issues
-              run: npm run build
+            - name: Run lint
+              run: npm run lint
+
+            - name: Run lint-fix
+              run: npm run lintfix
 
     create-rc:
-        needs: build-dev
+        needs: run-lint-on-dev
         runs-on: ubuntu-latest
 
         if: ${{ github.event.inputs.new-version }}
@@ -40,7 +43,6 @@ jobs:
 
             - name: Create branch rc${{ github.event.inputs.new-version }}
               run: |
-                  git pull
                   git checkout -b rc${{ github.event.inputs.new-version }}
                   git push -u origin rc${{ github.event.inputs.new-version }}
 
