@@ -38,8 +38,40 @@ jobs:
             - name: Merge branch rc${{ github.event.inputs.new-version }} into main
               uses: everlytic/branch-merge@1.1.2
               with:
-                  #   github_token: ${{ secrets.PAT }}
                   github_token: ${{ secrets.GITHUB_TOKEN }}
+                  #   github_token: ${{ secrets.PAT }} TODO!
                   source_ref: rc${{ github.event.inputs.new-version }}
                   target_branch: 'main'
                   commit_message_template: 'Merged rc${{ github.event.inputs.new-version }} into main. [skip ci]'
+
+    create-doc:
+        needs: merge-rc
+        runs-on: ubuntu-latest
+
+        if: ${{ github.event.inputs.new-version }}
+        steps:
+            - name: Checkout branch main
+              uses: actions/checkout@v3
+              with:
+                  ref: main
+                  token: ${{ secrets.GITHUB_TOKEN }}
+                  # token: ${{ secrets.PAT }} TODO!
+
+            - name: Install project dependencies
+              run: npm install
+
+            - name: Install graphviz
+              run: sudo apt install -y graphviz
+
+            - name: Generate documentation
+              run: npm run docs
+
+            - name: Sign and commit documentation to branch main
+              uses: ./.github/os-git-actions/signed-commit/
+              with:
+                  branch: main
+                  message: 'Update documentation [skip ci]'
+                  newFiles: true
+                  gpgPriv: ${{ secrets.GITHUB_TOKEN }}
+                  #   gpgPriv: ${{ secrets.GPG_SIGN_KEY }} TODO!
+                  #   gpgPassPhrase: ${{ secrets.GPG_PASSPHRASE }} TODO!
