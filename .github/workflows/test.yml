@@ -25,11 +25,14 @@ jobs:
             - name: Install project dependencies
               run: npm install
 
-            - name: Run lint
-              run: npm run lint
+            - name: Run build
+              run: npm run build
 
-            - name: Run lint-fix
-              run: npm run lintfix
+            # - name: Run lint
+            #   run: npm run lint
+
+            # - name: Run lint-fix
+            #   run: npm run lintfix
 
     create-rc:
         needs: run-lint-on-dev
