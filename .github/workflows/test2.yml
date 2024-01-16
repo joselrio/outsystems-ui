@@ -30,8 +30,7 @@ jobs:
 
         if: ${{ github.event.inputs.new-version }}
         steps:
-            - name: Checkout branch dev
-              uses: actions/checkout@v3
+            - uses: actions/checkout@v3
               with:
                   ref: rc${{ github.event.inputs.new-version }}
 
@@ -44,18 +43,30 @@ jobs:
                   target_branch: 'main'
                   commit_message_template: 'Merged rc${{ github.event.inputs.new-version }} into main. [skip ci]'
 
-    create-doc:
+    create-prep-to-deploy:
         needs: merge-rc
         runs-on: ubuntu-latest
 
         if: ${{ github.event.inputs.new-version }}
         steps:
-            - name: Checkout branch main
-              uses: actions/checkout@v3
+            - uses: actions/checkout@v3
               with:
                   ref: main
-                  token: ${{ secrets.GITHUB_TOKEN }}
-                  # token: ${{ secrets.PAT }} TODO!
+
+            - name: Create branch prep-to-deploy
+              run: |
+                  git checkout -b prep-to-deploy
+                  git push -u origin prep-to-deploy
+
+    create-doc:
+        needs: create-prep-to-deploy
+        runs-on: ubuntu-latest
+
+        if: ${{ github.event.inputs.new-version }}
+        steps:
+            - uses: actions/checkout@v3
+              with:
+                  ref: prep-to-deploy
 
             - name: Install project dependencies
               run: npm install
@@ -66,12 +77,65 @@ jobs:
             - name: Generate documentation
               run: npm run docs
 
-            - name: Sign and commit documentation to branch main
-              uses: ./.github/os-git-actions/signed-commit/
+            - name: Perform git commit
+              uses: ./.github/os-git-actions/manual-commit/
               with:
-                  branch: main
+                  branch: prep-to-deploy
                   message: 'Update documentation [skip ci]'
                   newFiles: true
-                  gpgPriv: ${{ secrets.GITHUB_TOKEN }}
-                  #   gpgPriv: ${{ secrets.GPG_SIGN_KEY }} TODO!
-                  #   gpgPassPhrase: ${{ secrets.GPG_PASSPHRASE }} TODO!
+
+    deploy-doc:
+        needs: create-doc
+        runs-on: ubuntu-latest
+
+        if: ${{ github.event.inputs.new-version }}
+        steps:
+            - uses: actions/checkout@v3
+              with:
+                  ref: prep-to-deploy
+
+            - name: Push docs
+              run: |
+                  echo "deploy docs! >>>>"
+
+            # - name: Push documentation files into github page
+            #   uses: GuillaumeFalourd/copy-push-files@v1
+            #   with:
+            #       source_files: docs/*
+            #       remote_repository: https://github.com/outsystems-ui-docs/outsystems-ui-docs.github.io
+            #       access_token: ${{ secrets.UICOMPONENTSDOCS }}
+            #       target_branch: main
+            #       commit_message: Deploy documentation.
+
+    prepare-to-deploy:
+        needs: deploy-doc
+        runs-on: ubuntu-latest
+
+        if: ${{ github.event.inputs.new-version }}
+        steps:
+            - name: Checkout branch main
+              uses: actions/checkout@v3
+              with:
+                  ref: prep-to-deploy
+
+            - name: Install project dependencies
+              run: npm install
+
+            - name: Compile into production mode
+              run: |
+                  npm run build
+
+            - name: Clean files and folders
+              run: |
+                  gulp prepareToDeploy
+
+            - name: Remove dist folder from .gitignore
+              run: |
+                  gulp removeDistFromGitIgnore
+
+            - name: Perform git commit
+              uses: ./.github/os-git-actions/manual-commit/
+              with:
+                  branch: prep-to-deploy
+                  message: 'Update documentation [skip ci]'
+                  newFiles: true
