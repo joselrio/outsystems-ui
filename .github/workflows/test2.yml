@@ -150,4 +150,14 @@ jobs:
               run: |
                   git add .
                   git commit -m 'prepare to deploy [skip ci]'
-                  git push origin prepareToDeploy
+                  git push origin prep-to-deploy
+
+            - name: Remove gitignore file
+              run: |
+                  rm .gitignore
+
+            - name: Commit changes
+              run: |
+                  git add .
+                  git commit -m 'removed .gitignore [skip ci]'
+                  git push origin prep-to-deploy
