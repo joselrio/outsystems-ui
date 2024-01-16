@@ -120,8 +120,7 @@ jobs:
 
         if: ${{ github.event.inputs.new-version }}
         steps:
-            - name: Checkout branch main
-              uses: actions/checkout@v3
+            - uses: actions/checkout@v3
               with:
                   ref: prep-to-deploy
 
