@@ -125,6 +125,13 @@ jobs:
               with:
                   ref: prep-to-deploy
 
+            # TODO
+            - name: Configure Git with the GitHub Token
+              run: |
+                  git config --global user.email "sa_git_uicomponents@outsystems.com"
+                  git config --global user.name "UiComponentsBot"
+                  git config --global credential.helper store
+
             - name: Install project dependencies
               run: npm install
 
