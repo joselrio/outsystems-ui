@@ -14,7 +14,6 @@ const listOfPathFilesToRemove = [
     './pipelines',
     './.eslintignore',
     './.eslintrc.json',
-    './.gitignore',
     './.prettierignore',
     './.prettierrc.json',
     './.snyk',
