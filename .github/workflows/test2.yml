@@ -44,14 +44,14 @@ jobs:
                   commit_message_template: 'Merged rc${{ github.event.inputs.new-version }} into main. [skip ci]'
 
     create-prep-to-deploy:
-        needs: merge-rc
+        needs: run-lint-on-rc
         runs-on: ubuntu-latest
 
         if: ${{ github.event.inputs.new-version }}
         steps:
             - uses: actions/checkout@v3
               with:
-                  ref: main
+                  ref: rc${{ github.event.inputs.new-version }}
 
             - name: Create branch prep-to-deploy
               run: |
@@ -132,13 +132,13 @@ jobs:
               run: |
                   npm run build
 
-            - name: Clean files and folders
-              run: |
-                  gulp prepareToDeploy
-
             - name: Remove dist folder from .gitignore
               run: |
                   gulp removeDistFromGitIgnore
+
+            - name: Clean files and folders
+              run: |
+                  gulp prepareToDeploy
 
             - name: Perform git commit
               uses: ./.github/os-git-actions/manual-commit/
