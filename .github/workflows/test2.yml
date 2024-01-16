@@ -35,7 +35,7 @@ jobs:
                   ref: rc${{ github.event.inputs.new-version }}
 
             - name: Merge branch rc${{ github.event.inputs.new-version }} into main
-              uses: everlytic/branch-merge@1.1.2
+              uses: everlytic/branch-merge@1.1.5
               with:
                   github_token: ${{ secrets.GITHUB_TOKEN }}
                   #   github_token: ${{ secrets.PAT }} TODO!
@@ -67,6 +67,13 @@ jobs:
             - uses: actions/checkout@v3
               with:
                   ref: prep-to-deploy
+
+            # TODO
+            - name: Configure Git with the GitHub Token
+              run: |
+                  git config --global user.email "sa_git_uicomponents@outsystems.com"
+                  git config --global user.name "UiComponentsBot"
+                  git config --global credential.helper store
 
             - name: Install project dependencies
               run: npm install

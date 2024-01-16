@@ -49,7 +49,7 @@ jobs:
 
         if: ${{ github.event.inputs.new-version }}
         steps:
-            # TODO: Remove the setUp git below since it will not be needed once token will be set
+            # TODO
             - name: Configure Git with the GitHub Token
               run: |
                   git config --global user.email "sa_git_uicomponents@outsystems.com"
