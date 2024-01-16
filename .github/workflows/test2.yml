@@ -24,7 +24,7 @@ jobs:
             - name: Run build
               run: npm run build
 
-    merge-rc:
+    merge-rc-into-main:
         needs: run-lint-on-rc
         runs-on: ubuntu-latest
 
@@ -114,7 +114,7 @@ jobs:
             #       target_branch: main
             #       commit_message: Deploy documentation.
 
-    prepare-to-deploy:
+    clean-to-deploy:
         needs: deploy-doc
         runs-on: ubuntu-latest
 
@@ -128,13 +128,13 @@ jobs:
             - name: Install project dependencies
               run: npm install
 
-            - name: Compile into production mode
-              run: |
-                  npm run build
-
             - name: Remove dist folder from .gitignore
               run: |
                   gulp removeDistFromGitIgnore
+
+            - name: Compile into production mode
+              run: |
+                  npm run build
 
             - name: Clean files and folders
               run: |
