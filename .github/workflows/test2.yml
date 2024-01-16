@@ -9,113 +9,113 @@ on:
                 required: true
 
 jobs:
-    run-lint-on-rc:
-        runs-on: ubuntu-latest
+    # run-lint-on-rc:
+    #     runs-on: ubuntu-latest
 
-        if: ${{ github.event.inputs.new-version }}
-        steps:
-            - uses: actions/checkout@v3
-              with:
-                  ref: rc${{ github.event.inputs.new-version }}
+    #     if: ${{ github.event.inputs.new-version }}
+    #     steps:
+    #         - uses: actions/checkout@v3
+    #           with:
+    #               ref: rc${{ github.event.inputs.new-version }}
 
-            - name: Install project dependencies
-              run: npm install
+    #         - name: Install project dependencies
+    #           run: npm install
 
-            - name: Run build
-              run: npm run build
+    #         - name: Run build
+    #           run: npm run build
 
-    merge-rc-into-main:
-        needs: run-lint-on-rc
-        runs-on: ubuntu-latest
+    # merge-rc-into-main:
+    #     needs: run-lint-on-rc
+    #     runs-on: ubuntu-latest
 
-        if: ${{ github.event.inputs.new-version }}
-        steps:
-            - uses: actions/checkout@v3
-              with:
-                  ref: rc${{ github.event.inputs.new-version }}
+    #     if: ${{ github.event.inputs.new-version }}
+    #     steps:
+    #         - uses: actions/checkout@v3
+    #           with:
+    #               ref: rc${{ github.event.inputs.new-version }}
 
-            - name: Merge branch rc${{ github.event.inputs.new-version }} into main
-              uses: everlytic/branch-merge@1.1.5
-              with:
-                  github_token: ${{ secrets.GITHUB_TOKEN }}
-                  #   github_token: ${{ secrets.PAT }} TODO!
-                  source_ref: rc${{ github.event.inputs.new-version }}
-                  target_branch: 'main'
-                  commit_message_template: 'Merged rc${{ github.event.inputs.new-version }} into main. [skip ci]'
+    #         - name: Merge branch rc${{ github.event.inputs.new-version }} into main
+    #           uses: everlytic/branch-merge@1.1.5
+    #           with:
+    #               github_token: ${{ secrets.GITHUB_TOKEN }}
+    #               #   github_token: ${{ secrets.PAT }} TODO!
+    #               source_ref: rc${{ github.event.inputs.new-version }}
+    #               target_branch: 'main'
+    #               commit_message_template: 'Merged rc${{ github.event.inputs.new-version }} into main. [skip ci]'
 
-    create-prep-to-deploy:
-        needs: run-lint-on-rc
-        runs-on: ubuntu-latest
+    # create-prep-to-deploy:
+    #     needs: run-lint-on-rc
+    #     runs-on: ubuntu-latest
 
-        if: ${{ github.event.inputs.new-version }}
-        steps:
-            - uses: actions/checkout@v3
-              with:
-                  ref: rc${{ github.event.inputs.new-version }}
+    #     if: ${{ github.event.inputs.new-version }}
+    #     steps:
+    #         - uses: actions/checkout@v3
+    #           with:
+    #               ref: rc${{ github.event.inputs.new-version }}
 
-            - name: Create branch prep-to-deploy
-              run: |
-                  git checkout -b prep-to-deploy
-                  git push -u origin prep-to-deploy
+    #         - name: Create branch prep-to-deploy
+    #           run: |
+    #               git checkout -b prep-to-deploy
+    #               git push -u origin prep-to-deploy
 
-    create-doc:
-        needs: create-prep-to-deploy
-        runs-on: ubuntu-latest
+    # create-doc:
+    #     needs: create-prep-to-deploy
+    #     runs-on: ubuntu-latest
 
-        if: ${{ github.event.inputs.new-version }}
-        steps:
-            - uses: actions/checkout@v3
-              with:
-                  ref: prep-to-deploy
+    #     if: ${{ github.event.inputs.new-version }}
+    #     steps:
+    #         - uses: actions/checkout@v3
+    #           with:
+    #               ref: prep-to-deploy
 
-            # TODO
-            - name: Configure Git with the GitHub Token
-              run: |
-                  git config --global user.email "sa_git_uicomponents@outsystems.com"
-                  git config --global user.name "UiComponentsBot"
-                  git config --global credential.helper store
+    #         # TODO
+    #         - name: Configure Git with the GitHub Token
+    #           run: |
+    #               git config --global user.email "sa_git_uicomponents@outsystems.com"
+    #               git config --global user.name "UiComponentsBot"
+    #               git config --global credential.helper store
 
-            - name: Install project dependencies
-              run: npm install
+    #         - name: Install project dependencies
+    #           run: npm install
 
-            - name: Install graphviz
-              run: sudo apt install -y graphviz
+    #         - name: Install graphviz
+    #           run: sudo apt install -y graphviz
 
-            - name: Generate documentation
-              run: npm run docs
+    #         - name: Generate documentation
+    #           run: npm run docs
 
-            - name: Perform git commit
-              uses: ./.github/os-git-actions/manual-commit/
-              with:
-                  branch: prep-to-deploy
-                  message: 'Update documentation [skip ci]'
-                  newFiles: true
+    #         - name: Perform git commit
+    #           uses: ./.github/os-git-actions/manual-commit/
+    #           with:
+    #               branch: prep-to-deploy
+    #               message: 'Update documentation [skip ci]'
+    #               newFiles: true
 
-    deploy-doc:
-        needs: create-doc
-        runs-on: ubuntu-latest
+    # deploy-doc:
+    #     needs: create-doc
+    #     runs-on: ubuntu-latest
 
-        if: ${{ github.event.inputs.new-version }}
-        steps:
-            - uses: actions/checkout@v3
-              with:
-                  ref: prep-to-deploy
+    #     if: ${{ github.event.inputs.new-version }}
+    #     steps:
+    #         - uses: actions/checkout@v3
+    #           with:
+    #               ref: prep-to-deploy
 
-            - name: Push docs
-              run: |
-                  echo "deploy docs! >>>>"
+    #         - name: Push docs
+    #           run: |
+    #               echo "deploy docs! >>>>"
 
-            # - name: Push documentation files into github page
-            #   uses: GuillaumeFalourd/copy-push-files@v1
-            #   with:
-            #       source_files: docs/*
-            #       remote_repository: https://github.com/outsystems-ui-docs/outsystems-ui-docs.github.io
-            #       access_token: ${{ secrets.UICOMPONENTSDOCS }}
-            #       target_branch: main
-            #       commit_message: Deploy documentation.
+    #         # - name: Push documentation files into github page
+    #         #   uses: GuillaumeFalourd/copy-push-files@v1
+    #         #   with:
+    #         #       source_files: docs/*
+    #         #       remote_repository: https://github.com/outsystems-ui-docs/outsystems-ui-docs.github.io
+    #         #       access_token: ${{ secrets.UICOMPONENTSDOCS }}
+    #         #       target_branch: main
+    #         #       commit_message: Deploy documentation.
 
     clean-to-deploy:
-        needs: deploy-doc
+        # needs: deploy-doc
         runs-on: ubuntu-latest
 
         if: ${{ github.event.inputs.new-version }}
