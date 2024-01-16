@@ -140,9 +140,8 @@ jobs:
               run: |
                   gulp prepareToDeploy
 
-            - name: Perform git commit
-              uses: ./.github/os-git-actions/manual-commit/
-              with:
-                  branch: prep-to-deploy
-                  message: 'Update documentation [skip ci]'
-                  newFiles: true
+            - name: Commit changes
+              run: |
+                  git add .
+                  git commit -m 'prepare to deploy [skip ci]'
+                  git push origin prepareToDeploy
