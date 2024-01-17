@@ -151,3 +151,4 @@ jobs:
                   git add .
                   git commit -m 'prepare to deploy [skip ci]'
                   git push origin prep-to-deploy
+                  rm .gitignore
