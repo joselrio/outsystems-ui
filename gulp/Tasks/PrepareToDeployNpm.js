@@ -8,19 +8,20 @@ const utils = require('./Utils');
 
 // Store the list of files that should be removed before deploy to NPM
 const listOfPathFilesToRemove = [
-    './.github',
-    './.vscode',
-    './gulp',
-    './pipelines',
     './.eslintignore',
     './.eslintrc.json',
+    './.github',
     './.prettierignore',
     './.prettierrc.json',
     './.snyk',
     './.stylelintignore',
     './.stylelintrc.json',
+    './.vscode',
     './CODEOWNERS',
+    './gulp',
     './gulpfile.js',
+    './node_modules',
+    './pipelines',
     './tsconfig.json',
     './typedoc.json',
 ];
